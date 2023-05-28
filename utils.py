@@ -62,5 +62,23 @@ def fitness_function(individual, pop, data, constraints, w_penalty):
         fitness = 0
         for ingredient in individual:
             fitness += data[ingredient][2]
+            
+        for sublist in pop:
+            for element in list(set(sublist)):
+                if element in counts:
+                    counts[element] += 1
+                else:
+                    counts[element] = 1
+
+        for ingredient in individual:
+            if counts[ingredient] != 1:
+                penalty += counts[ingredient]
+
+        if max(counts) != min(counts):
+            penalty = ((penalty - min(counts)) / (max(counts) - min(counts)))*w_penalty
+        else:
+            penalty = 0.5
+
+        fitness += penalty
 
     return fitness
